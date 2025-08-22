@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Voca List</string>
+    <string name="enter_word">Enter word</string>
+    <string name="translation_placeholder">Translation will appear here</string>
+    <string name="translate">Translate</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="no_words_to_play">No words to play</string>
+    <string name="tts_init_failed">Text-to-Speech initialization failed</string>
+    <string name="translating">Translating...</string>
+    <string name="translation_failed">Translation failed</string>
+    <string name="model_download_failed">Model download failed</string>
+    <string name="translation_error">Translation error</string>
+    <string name="ml_kit_translation">ML Kit Translation</string>
+</resources>
