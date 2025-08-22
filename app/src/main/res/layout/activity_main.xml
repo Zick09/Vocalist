@@ -142,12 +142,12 @@
             android:id="@+id/textViewRowCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="50dp"
             android:background="@drawable/text_field_background"
             android:padding="12dp"
             android:text="0 rows"
-            android:textSize="14sp"
             android:textColor="@android:color/black"
+            android:textSize="14sp"
             tools:ignore="TouchTargetSizeCheck" />
 
         <com.google.android.material.button.MaterialButton

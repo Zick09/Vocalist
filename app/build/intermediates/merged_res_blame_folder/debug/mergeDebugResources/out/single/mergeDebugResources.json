@@ -52,10 +52,6 @@
         "source": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-main-6:\\drawable\\ic_right_arrow_circle.xml"
     },
     {
-        "merged": "com.ninebit.mynewapp-debug-4:/drawable_word_pair_highlighted_background.xml.flat",
-        "source": "com.ninebit.mynewapp-main-6:/drawable/word_pair_highlighted_background.xml"
-    },
-    {
         "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-debug-4:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-main-6:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
@@ -106,6 +102,10 @@
     {
         "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-debug-4:\\drawable_ic_launcher_background.xml.flat",
         "source": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-main-6:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-debug-4:/layout_activity_main.xml.flat",
+        "source": "com.ninebit.mynewapp-main-6:/layout/activity_main.xml"
     },
     {
         "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-debug-4:\\mipmap-mdpi_ic_launcher.webp.flat",

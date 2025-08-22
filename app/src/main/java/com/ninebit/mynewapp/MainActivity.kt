@@ -2,6 +2,8 @@ package com.ninebit.mynewapp
 
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,13 +30,27 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Clear old format data to ensure proper order preservation
+        val sharedPrefs = getSharedPreferences("WordPairsData", MODE_PRIVATE)
+        if (sharedPrefs.contains("wordPairs") && !sharedPrefs.contains("wordPairsJson")) {
+            val editor = sharedPrefs.edit()
+            editor.remove("wordPairs")
+            editor.apply()
+            android.util.Log.d("MainActivity", "Cleared old format data")
+        }
+
         setupSpinners()
         setupButtons()
         initializeTextToSpeech()
         loadSavedData()
         updateRowCount()
-        addInitialWordPairItem()
-        // Show add button on the first row
+        
+        // Only add initial empty row if no data was loaded
+        if (binding.containerWordPairs.childCount == 0) {
+            addInitialWordPairItem()
+        }
+        
+        // Show add button on the last row
         showAddButtonOnLastRow()
     }
 
@@ -294,6 +310,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val deleteButton = wordPairView.findViewById<ImageButton>(R.id.buttonDelete)
         val addButton = wordPairView.findViewById<Button>(R.id.buttonAdd)
         
+        // Add TextWatcher for automatic saving
+        originalText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                saveData()
+            }
+        })
+        
         // Translate button handler
         translateButton.setOnClickListener {
             val text = originalText.text.toString()
@@ -303,6 +328,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 translateWord(text, fromLang, toLang) { translatedResult ->
                     runOnUiThread {
                         translatedText.text = translatedResult
+                        saveData() // Save after translation
                     }
                 }
             }
@@ -414,13 +440,30 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             val original = originalText.text.toString()
             val translated = translatedText.text.toString()
             
-            if (original.isNotEmpty() && translated.isNotEmpty() && translated != "Translation will appear here") {
-                wordPairs.add("$original|$translated")
+            // Save only rows with content
+            if (original.isNotEmpty()) {
+                // If there's original text, save it with translation (even if empty)
+                val translationToSave = if (translated.isNotEmpty() && translated != "Translation will appear here") {
+                    translated
+                } else {
+                    ""
+                }
+                wordPairs.add("$original|$translationToSave")
             }
+            // Skip completely empty rows - they will be added automatically when needed
         }
         
-        editor.putStringSet("wordPairs", wordPairs.toSet())
+        // Save as JSON array to preserve order
+        val jsonArray = org.json.JSONArray()
+        for (wordPair in wordPairs) {
+            jsonArray.put(wordPair)
+        }
+        val jsonString = jsonArray.toString()
+        editor.putString("wordPairsJson", jsonString)
         editor.apply()
+        
+        // Debug log to verify order
+        android.util.Log.d("MainActivity", "Saved word pairs in order: $jsonString")
     }
 
     private fun loadSavedData() {
@@ -436,17 +479,40 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.spinnerDelay.setSelection(delayIndex)
         
         // Load word pairs
-        val wordPairsSet = sharedPrefs.getStringSet("wordPairs", setOf())
-        if (wordPairsSet != null && wordPairsSet.isNotEmpty()) {
-            // Clear the initial empty row
-            binding.containerWordPairs.removeAllViews()
-            
-            // Add saved word pairs
-            for (wordPair in wordPairsSet) {
-                val parts = wordPair.split("|")
-                if (parts.size == 2) {
-                    addSavedWordPair(parts[0], parts[1])
+        val wordPairsJson = sharedPrefs.getString("wordPairsJson", null)
+        if (wordPairsJson != null && wordPairsJson.isNotEmpty()) {
+            try {
+                val jsonArray = org.json.JSONArray(wordPairsJson)
+                // Clear the initial empty row
+                binding.containerWordPairs.removeAllViews()
+                
+                // Debug log to verify loading order
+                android.util.Log.d("MainActivity", "Loading word pairs in order: $wordPairsJson")
+                
+                // Add saved word pairs in order
+                for (i in 0 until jsonArray.length()) {
+                    val wordPair = jsonArray.getString(i)
+                    val parts = wordPair.split("|")
+                    if (parts.size >= 2) {
+                        val original = parts[0]
+                        val translated = parts[1]
+                        
+                        if (original.isEmpty() && translated.isEmpty()) {
+                            // Skip completely empty rows - they will be added automatically if needed
+                            continue
+                        } else {
+                            // Row with content
+                            addSavedWordPair(original, translated)
+                        }
+                    }
                 }
+            } catch (e: Exception) {
+                // Log error and start fresh if JSON parsing fails
+                android.util.Log.e("MainActivity", "Error loading saved data: ${e.message}")
+                // Clear any old format data to prevent future issues
+                val editor = sharedPrefs.edit()
+                editor.remove("wordPairs")
+                editor.apply()
             }
         }
     }
@@ -460,9 +526,22 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val deleteButton = wordPairView.findViewById<ImageButton>(R.id.buttonDelete)
         val addButton = wordPairView.findViewById<Button>(R.id.buttonAdd)
         
+        // Add TextWatcher for automatic saving
+        originalText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                saveData()
+            }
+        })
+        
         // Set saved values
         originalText.setText(original)
-        translatedText.text = translated
+        translatedText.text = if (translated.isEmpty()) {
+            "Translation will appear here"
+        } else {
+            translated
+        }
         
         // Translate button handler
         translateButton.setOnClickListener {
@@ -473,6 +552,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 translateWord(text, fromLang, toLang) { translatedResult ->
                     runOnUiThread {
                         translatedText.text = translatedResult
+                        saveData() // Save after translation
                     }
                 }
             }
@@ -497,6 +577,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 // Show add button on the last remaining row
                 showAddButtonOnLastRow()
             }
+            saveData()
         }
         
         // Add button handler - adds new row and hides this button
@@ -505,6 +586,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             addButton.visibility = View.GONE
             // Add a new empty input row
             addInitialWordPairItem()
+            saveData()
         }
         
         binding.containerWordPairs.addView(wordPairView)
