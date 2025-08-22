@@ -1482,6 +1482,7 @@ int color highlighted_text_material_dark 0x7f05006b
 int color highlighted_text_material_light 0x7f05006c
 int color ic_launcher_background 0x7f05006d
 int color inactive 0x7f05006e
+int color inactive2 0x7f05031f
 int color m3_appbar_overlay_color 0x7f05006f
 int color m3_assist_chip_icon_tint_color 0x7f050070
 int color m3_assist_chip_stroke_color 0x7f050071

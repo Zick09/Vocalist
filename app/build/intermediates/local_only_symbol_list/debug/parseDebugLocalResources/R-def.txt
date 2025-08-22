@@ -5,6 +5,7 @@ color black
 color error
 color ic_launcher_background
 color inactive
+color inactive2
 color on_background
 color on_error
 color on_primary

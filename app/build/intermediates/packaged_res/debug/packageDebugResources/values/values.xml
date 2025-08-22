@@ -5,6 +5,7 @@
     <color name="error">#FFB00020</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="inactive">#9D7030</color>
+    <color name="inactive2">#FFDF9F44</color>
     <color name="on_background">#FF000000</color>
     <color name="on_error">#FFFFFFFF</color>
     <color name="on_primary">#FFFFFFFF</color>

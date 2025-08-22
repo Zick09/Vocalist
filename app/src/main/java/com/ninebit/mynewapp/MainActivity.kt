@@ -1,5 +1,6 @@
 package com.ninebit.mynewapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.text.Editable
@@ -66,8 +67,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerToLanguage.adapter = toAdapter
 
-        // Delay options
-        val delays = arrayOf("1s", "2s", "3s", "5s")
+        // Delay options - from 1 to 4 seconds with 0.5 step
+        val delays = arrayOf("1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0")
         val delayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, delays)
         delayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDelay.adapter = delayAdapter
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // Set default selections
         binding.spinnerFromLanguage.setSelection(0) // English
         binding.spinnerToLanguage.setSelection(1) // Spanish
-        binding.spinnerDelay.setSelection(1) // 2s
+        binding.spinnerDelay.setSelection(2) // 2.0s
         
         // Add listeners for automatic saving
         binding.spinnerFromLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -127,6 +128,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun startPlayback() {
         val wordPairViews = getWordPairViews()
         if (wordPairViews.isEmpty()) {
@@ -138,6 +140,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         currentIndex = 0
         binding.buttonPlay.isEnabled = false
         binding.buttonStop.isEnabled = true
+        
+        // Change Stop button text and icon color to white, background to red
+        binding.buttonStop.setTextColor(android.graphics.Color.WHITE)
+        binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+        binding.buttonStop.setBackgroundColor(android.graphics.Color.RED)
+
 
         playNextWord(wordPairViews)
     }
@@ -163,17 +171,20 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // Highlight the current word pair
             highlightWordPair(wordPairView)
             
+            // Scroll to the current word pair to make it visible
+            scrollToWordPair(wordPairView)
+            
             // Speak original word in source language
             speakInLanguage(original, fromLanguage)
             
             // Schedule translated word in target language
+            val delayText = binding.spinnerDelay.selectedItem.toString()
+            val delay = delayText.toDoubleOrNull() ?: 2.0
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                 if (isPlaying) {
                     speakInLanguage(translated, toLanguage)
                     
-                    // Schedule next word
-                    val delayText = binding.spinnerDelay.selectedItem.toString()
-                    val delay = delayText.replace("s", "").toIntOrNull() ?: 2
+                    // Schedule next word pair after the same delay
                     android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                         // Remove highlight from current word pair
                         removeHighlight(wordPairView)
@@ -181,7 +192,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         playNextWord(wordPairViews)
                     }, (delay * 1000).toLong())
                 }
-            }, 1000) // Wait 1 second before speaking translation
+            }, (delay * 1000).toLong()) // Use delay for both between words and between rows
         } else {
             // Skip empty pairs and go to next
             currentIndex++
@@ -211,10 +222,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun stopPlayback() {
         isPlaying = false
         binding.buttonPlay.isEnabled = true
         binding.buttonStop.isEnabled = false
+        
+        // Reset Stop button text and icon color to default, remove red background
+        binding.buttonStop.setTextColor(R.color.inactive2)
+        binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(R.color.inactive2)
+        binding.buttonStop.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         textToSpeech.stop()
         // Remove any remaining highlights
         removeAllHighlights()
@@ -230,7 +247,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun updateRowCount() {
         val count = binding.containerWordPairs.childCount
-        binding.textViewRowCount.text = "$count rows"
+        binding.textViewRowCount.text = "Total: $count"
     }
 
     private fun showAddButtonOnLastRow() {
@@ -269,6 +286,28 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         currentHighlightedView = null
     }
 
+    private fun scrollToWordPair(wordPairView: View) {
+        // Find the ScrollView parent
+        var parent = wordPairView.parent
+        while (parent != null && parent !is android.widget.ScrollView) {
+            parent = parent.parent
+        }
+        
+        if (parent is android.widget.ScrollView) {
+            // Calculate the position to scroll to
+            val scrollView = parent
+            val scrollViewTop = scrollView.top
+            val wordPairTop = wordPairView.top
+            val wordPairHeight = wordPairView.height
+            
+            // Scroll to make the word pair visible with some padding
+            val scrollToY = wordPairTop - scrollViewTop - 100 // 100dp padding from top
+            
+            // Use smooth scroll for better UX
+            scrollView.smoothScrollTo(0, scrollToY)
+        }
+    }
+
     private fun playSingleWordPair(wordPairView: View) {
         val originalText = wordPairView.findViewById<TextInputEditText>(R.id.editTextWord)
         val translatedText = wordPairView.findViewById<TextView>(R.id.textViewTranslation)
@@ -284,18 +323,23 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // Highlight the word pair
             highlightWordPair(wordPairView)
             
+            // Scroll to the word pair to make it visible
+            scrollToWordPair(wordPairView)
+            
             // Speak original word in source language
             speakInLanguage(original, fromLanguage)
             
             // Schedule translated word in target language
+            val delayText = binding.spinnerDelay.selectedItem.toString()
+            val delay = delayText.toDoubleOrNull() ?: 2.0
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                 speakInLanguage(translated, toLanguage)
                 
-                // Remove highlight after a delay
+                // Remove highlight after the same delay
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                     removeHighlight(wordPairView)
-                }, 2000) // Keep highlight for 2 seconds after speaking
-            }, 1000) // Wait 1 second before speaking translation
+                }, (delay * 1000).toLong()) // Keep highlight for delay seconds after speaking
+            }, (delay * 1000).toLong()) // Use delay between words
         }
     }
 
@@ -348,15 +392,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 translatedText.text = "Translation will appear here"
             } else {
                 // If more than one row, remove the row
-                binding.containerWordPairs.removeView(wordPairView)
-                updateRowCount()
-                // Show add button on the last remaining row
-                showAddButtonOnLastRow()
+                animateRowRemoval(wordPairView) {
+                    updateRowCount()
+                    // Show add button on the last remaining row
+                    showAddButtonOnLastRow()
+                }
             }
             saveData()
         }
         
-        // Add button handler - adds new row and hides this button
+                // Add button handler - adds new row and hides this button
         addButton.setOnClickListener {
             // Hide this add button
             addButton.visibility = View.GONE
@@ -365,11 +410,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             saveData()
         }
         
-
         
-
         
-        binding.containerWordPairs.addView(wordPairView)
+        
+        
+        // Use animation for adding the row
+        animateRowAddition(wordPairView)
         updateRowCount()
         // Show add button on the newly added row (which is now the last row)
         showAddButtonOnLastRow()
@@ -472,7 +518,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // Load selected languages and delay
         val fromLanguageIndex = sharedPrefs.getInt("fromLanguageIndex", 0)
         val toLanguageIndex = sharedPrefs.getInt("toLanguageIndex", 1)
-        val delayIndex = sharedPrefs.getInt("delayIndex", 1)
+        val delayIndex = sharedPrefs.getInt("delayIndex", 2) // Default to 2.0s
         
         binding.spinnerFromLanguage.setSelection(fromLanguageIndex)
         binding.spinnerToLanguage.setSelection(toLanguageIndex)
@@ -572,10 +618,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 translatedText.text = "Translation will appear here"
             } else {
                 // If more than one row, remove the row
-                binding.containerWordPairs.removeView(wordPairView)
-                updateRowCount()
-                // Show add button on the last remaining row
-                showAddButtonOnLastRow()
+                animateRowRemoval(wordPairView) {
+                    updateRowCount()
+                    // Show add button on the last remaining row
+                    showAddButtonOnLastRow()
+                }
             }
             saveData()
         }
@@ -589,9 +636,45 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             saveData()
         }
         
-        binding.containerWordPairs.addView(wordPairView)
+        // Use animation for adding the row
+        animateRowAddition(wordPairView)
         updateRowCount()
         // Show add button on the newly added row (which is now the last row)
         showAddButtonOnLastRow()
+    }
+
+    private fun animateRowRemoval(wordPairView: View, onComplete: () -> Unit) {
+        // Create slide out animation to the right
+        val slideOut = android.view.animation.AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right)
+        slideOut.duration = 300 // 300ms duration
+        
+        slideOut.setAnimationListener(object : android.view.animation.Animation.AnimationListener {
+            override fun onAnimationStart(animation: android.view.animation.Animation?) {}
+            override fun onAnimationRepeat(animation: android.view.animation.Animation?) {}
+            override fun onAnimationEnd(animation: android.view.animation.Animation?) {
+                // Remove the view after animation completes
+                binding.containerWordPairs.removeView(wordPairView)
+                onComplete()
+            }
+        })
+        
+        wordPairView.startAnimation(slideOut)
+    }
+
+    private fun animateRowAddition(wordPairView: View) {
+        // Set initial position (off-screen to the left)
+        wordPairView.translationX = -wordPairView.width.toFloat()
+        wordPairView.alpha = 0f
+        
+        // Add view to container
+        binding.containerWordPairs.addView(wordPairView)
+        
+        // Animate in from left
+        wordPairView.animate()
+            .translationX(0f)
+            .alpha(1f)
+            .setDuration(300) // 300ms duration
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
     }
 }
