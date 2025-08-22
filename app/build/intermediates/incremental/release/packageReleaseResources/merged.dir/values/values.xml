@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="background">#FFF5F5F5</color>
+    <color name="black">#FF000000</color>
+    <color name="error">#FFB00020</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="inactive">#9D7030</color>
+    <color name="on_background">#FF000000</color>
+    <color name="on_error">#FFFFFFFF</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="on_secondary">#FFFFFFFF</color>
+    <color name="on_surface">#FF000000</color>
+    <color name="primary">#4D96FE</color>
+    <color name="primary_variant">#4D96FE</color>
+    <color name="secondary">#4D96FE</color>
+    <color name="secondary_variant">#4D96FE</color>
+    <color name="stop_red">#FF0000</color>
+    <color name="surface">#FFF5F5F5</color>
+    <color name="trans">@android:color/transparent</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Voca List</string>
+    <string name="enter_word">Enter word</string>
+    <string name="ml_kit_translation">ML Kit Translation</string>
+    <string name="model_download_failed">Model download failed</string>
+    <string name="no_words_to_play">No words to play</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="translate">Translate</string>
+    <string name="translating">Translating...</string>
+    <string name="translation_error">Translation error</string>
+    <string name="translation_failed">Translation failed</string>
+    <string name="translation_placeholder">Translation will appear here</string>
+    <string name="tts_init_failed">Text-to-Speech initialization failed</string>
+    <style name="Theme.MyNewApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        
+        <item name="android:statusBarColor" ns1:targetApi="l">?attr/colorPrimaryVariant</item>
+        
+    </style>
+</resources>

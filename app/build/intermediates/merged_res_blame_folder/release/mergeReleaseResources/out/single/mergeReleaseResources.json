@@ -1,0 +1,174 @@
+[
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxxhdpi_ic_launcher_background.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxxhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_word_pair_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/word_pair_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_word_pair_highlighted_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/word_pair_highlighted_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_close.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_close.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_word_pair_playing_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/word_pair_playing_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_stop.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_stop.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-hdpi_ic_launcher_background.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-hdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/xml_data_extraction_rules.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_vocalist_2.png.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/vocalist_2.png"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/xml_backup_rules.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-mdpi_ic_launcher_background.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-mdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_app_logo.png.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/app_logo.png"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_play.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_play.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_add_button_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/add_button_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xhdpi_ic_launcher_background.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxhdpi_ic_launcher_background.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_arrow_right.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_arrow_right.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_background.png.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/background.png"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_right_arrow_circle.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_right_arrow_circle.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_text_field_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/text_field_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-hdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/layout_word_pair_item.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/layout/word_pair_item.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_delete_row_circle.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_delete_row_circle.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.ninebit.mynewapp-main-5:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_translation_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/translation_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-release-4:/layout_activity_main.xml.flat",
+        "source": "com.ninebit.mynewapp-main-5:/layout/activity_main.xml"
+    }
+]

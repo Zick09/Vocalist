@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.ninebit.mynewapp-mergeReleaseResources-3:/layout/activity_main.xml",
+        "source": "com.ninebit.mynewapp-main-5:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.ninebit.mynewapp-mergeReleaseResources-3:/layout/word_pair_item.xml",
+        "source": "com.ninebit.mynewapp-main-5:/layout/word_pair_item.xml"
+    }
+]

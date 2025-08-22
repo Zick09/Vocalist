@@ -20,14 +20,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var textToSpeech: TextToSpeech
     private var isPlaying = false
     private var currentIndex = 0
-    private val wordPairs = mutableListOf<WordPair>()
     private var translator: Translator? = null
-
-    data class WordPair(
-        val original: String,
-        val translated: String,
-        val delay: Int
-    )
+    private var currentHighlightedView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +33,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         initializeTextToSpeech()
         updateRowCount()
         addInitialWordPairItem()
+        // Show add button on the first row
+        showAddButtonOnLastRow()
     }
 
     private fun setupSpinners() {
@@ -93,7 +89,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun startPlayback() {
-        if (wordPairs.isEmpty()) {
+        val wordPairViews = getWordPairViews()
+        if (wordPairViews.isEmpty()) {
             Toast.makeText(this, "No word pairs to play", Toast.LENGTH_SHORT).show()
             return
         }
@@ -103,32 +100,76 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonPlay.isEnabled = false
         binding.buttonStop.isEnabled = true
 
-        playNextWord()
+        playNextWord(wordPairViews)
     }
 
-    private fun playNextWord() {
-        if (!isPlaying || currentIndex >= wordPairs.size) {
+    private fun playNextWord(wordPairViews: List<View>) {
+        if (!isPlaying || currentIndex >= wordPairViews.size) {
             stopPlayback()
             return
         }
 
-        val wordPair = wordPairs[currentIndex]
+        val wordPairView = wordPairViews[currentIndex]
+        val originalText = wordPairView.findViewById<TextInputEditText>(R.id.editTextWord)
+        val translatedText = wordPairView.findViewById<TextView>(R.id.textViewTranslation)
         
-        // Speak original word
-        textToSpeech.speak(wordPair.original, TextToSpeech.QUEUE_FLUSH, null, null)
+        val original = originalText.text.toString()
+        val translated = translatedText.text.toString()
         
-        // Schedule translated word
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-            if (isPlaying) {
-                textToSpeech.speak(wordPair.translated, TextToSpeech.QUEUE_FLUSH, null, null)
-                
-                // Schedule next word
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    currentIndex++
-                    playNextWord()
-                }, (wordPair.delay * 1000).toLong())
-            }
-        }, 1000) // Wait 1 second before speaking translation
+        if (original.isNotEmpty() && translated.isNotEmpty() && translated != "Translation will appear here") {
+            // Get current language selections
+            val fromLanguage = binding.spinnerFromLanguage.selectedItem.toString()
+            val toLanguage = binding.spinnerToLanguage.selectedItem.toString()
+            
+            // Highlight the current word pair
+            highlightWordPair(wordPairView)
+            
+            // Speak original word in source language
+            speakInLanguage(original, fromLanguage)
+            
+            // Schedule translated word in target language
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if (isPlaying) {
+                    speakInLanguage(translated, toLanguage)
+                    
+                    // Schedule next word
+                    val delayText = binding.spinnerDelay.selectedItem.toString()
+                    val delay = delayText.replace("s", "").toIntOrNull() ?: 2
+                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                        // Remove highlight from current word pair
+                        removeHighlight(wordPairView)
+                        currentIndex++
+                        playNextWord(wordPairViews)
+                    }, (delay * 1000).toLong())
+                }
+            }, 1000) // Wait 1 second before speaking translation
+        } else {
+            // Skip empty pairs and go to next
+            currentIndex++
+            playNextWord(wordPairViews)
+        }
+    }
+
+    private fun speakInLanguage(text: String, language: String) {
+        val locale = getLocaleForLanguage(language)
+        textToSpeech.setLanguage(locale)
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    private fun getLocaleForLanguage(language: String): Locale {
+        return when (language) {
+            "English" -> Locale.US
+            "Spanish" -> Locale("es")
+            "French" -> Locale.FRENCH
+            "German" -> Locale.GERMAN
+            "Italian" -> Locale.ITALIAN
+            "Portuguese" -> Locale("pt")
+            "Russian" -> Locale("ru")
+            "Japanese" -> Locale.JAPANESE
+            "Korean" -> Locale.KOREAN
+            "Chinese" -> Locale.CHINESE
+            else -> Locale.US
+        }
     }
 
     private fun stopPlayback() {
@@ -136,68 +177,90 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonPlay.isEnabled = true
         binding.buttonStop.isEnabled = false
         textToSpeech.stop()
+        // Remove any remaining highlights
+        removeAllHighlights()
     }
 
-    fun addWordPair(original: String, translated: String, delay: Int) {
-        val wordPair = WordPair(original, translated, delay)
-        wordPairs.add(wordPair)
-        updateRowCount()
-        addWordPairView(wordPair)
-    }
-
-    private fun addWordPairView(wordPair: WordPair) {
-        val wordPairView = LayoutInflater.from(this).inflate(R.layout.word_pair_item, binding.containerWordPairs, false)
-        
-        val originalText = wordPairView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.editTextWord)
-        val translatedText = wordPairView.findViewById<TextView>(R.id.textViewTranslation)
-        val deleteButton = wordPairView.findViewById<ImageButton>(R.id.buttonDelete)
-        val translateButton = wordPairView.findViewById<ImageButton>(R.id.buttonTranslate)
-        val addButton = wordPairView.findViewById<Button>(R.id.buttonAdd)
-        
-        originalText.setText(wordPair.original)
-        translatedText.text = wordPair.translated
-        
-        // Translate button handler
-        translateButton.setOnClickListener {
-            val text = originalText.text.toString()
-            if (text.isNotEmpty()) {
-                val fromLang = binding.spinnerFromLanguage.selectedItem.toString()
-                val toLang = binding.spinnerToLanguage.selectedItem.toString()
-                translateWord(text, fromLang, toLang) { translatedResult ->
-                    runOnUiThread {
-                        translatedText.text = translatedResult
-                    }
-                }
-            }
+    private fun getWordPairViews(): List<View> {
+        val views = mutableListOf<View>()
+        for (i in 0 until binding.containerWordPairs.childCount) {
+            views.add(binding.containerWordPairs.getChildAt(i))
         }
-        
-        // Delete button handler
-        deleteButton.setOnClickListener {
-            val index = wordPairs.indexOf(wordPair)
-            if (index != -1) {
-                wordPairs.removeAt(index)
-                binding.containerWordPairs.removeView(wordPairView)
-                updateRowCount()
-            }
-        }
-        
-        // Add button handler
-        addButton.setOnClickListener {
-            val original = originalText.text.toString()
-            val translated = translatedText.text.toString()
-            if (original.isNotEmpty() && translated.isNotEmpty()) {
-                val delayText = binding.spinnerDelay.selectedItem.toString()
-                val delay = delayText.replace("s", "").toIntOrNull() ?: 2
-                addWordPair(original, translated, delay)
-            }
-        }
-        
-        binding.containerWordPairs.addView(wordPairView)
+        return views
     }
 
     private fun updateRowCount() {
-        binding.textViewRowCount.text = "${wordPairs.size} rows"
+        val count = binding.containerWordPairs.childCount
+        binding.textViewRowCount.text = "$count rows"
     }
+
+    private fun showAddButtonOnLastRow() {
+        val totalRows = binding.containerWordPairs.childCount
+        if (totalRows > 0) {
+            // Hide add button on all rows
+            for (i in 0 until totalRows) {
+                val rowView = binding.containerWordPairs.getChildAt(i)
+                val addButton = rowView.findViewById<Button>(R.id.buttonAdd)
+                addButton.visibility = View.GONE
+            }
+            // Show add button only on the last row
+            val lastRowView = binding.containerWordPairs.getChildAt(totalRows - 1)
+            val lastAddButton = lastRowView.findViewById<Button>(R.id.buttonAdd)
+            lastAddButton.visibility = View.VISIBLE
+        }
+    }
+
+    private fun highlightWordPair(wordPairView: View) {
+        // Remove previous highlight
+        removeAllHighlights()
+        // Set new highlight
+        wordPairView.setBackgroundResource(R.drawable.word_pair_highlighted_background)
+        currentHighlightedView = wordPairView
+    }
+
+    private fun removeHighlight(wordPairView: View) {
+        wordPairView.setBackgroundResource(R.drawable.word_pair_background)
+        if (currentHighlightedView == wordPairView) {
+            currentHighlightedView = null
+        }
+    }
+
+    private fun removeAllHighlights() {
+        currentHighlightedView?.setBackgroundResource(android.R.color.transparent)
+        currentHighlightedView = null
+    }
+
+    private fun playSingleWordPair(wordPairView: View) {
+        val originalText = wordPairView.findViewById<TextInputEditText>(R.id.editTextWord)
+        val translatedText = wordPairView.findViewById<TextView>(R.id.textViewTranslation)
+        
+        val original = originalText.text.toString()
+        val translated = translatedText.text.toString()
+        
+        if (original.isNotEmpty() && translated.isNotEmpty() && translated != "Translation will appear here") {
+            // Get current language selections
+            val fromLanguage = binding.spinnerFromLanguage.selectedItem.toString()
+            val toLanguage = binding.spinnerToLanguage.selectedItem.toString()
+            
+            // Highlight the word pair
+            highlightWordPair(wordPairView)
+            
+            // Speak original word in source language
+            speakInLanguage(original, fromLanguage)
+            
+            // Schedule translated word in target language
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                speakInLanguage(translated, toLanguage)
+                
+                // Remove highlight after a delay
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    removeHighlight(wordPairView)
+                }, 2000) // Keep highlight for 2 seconds after speaking
+            }, 1000) // Wait 1 second before speaking translation
+        }
+    }
+
+
 
     private fun addInitialWordPairItem() {
         val wordPairView = LayoutInflater.from(this).inflate(R.layout.word_pair_item, binding.containerWordPairs, false)
@@ -205,6 +268,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val originalText = wordPairView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.editTextWord)
         val translatedText = wordPairView.findViewById<TextView>(R.id.textViewTranslation)
         val translateButton = wordPairView.findViewById<ImageButton>(R.id.buttonTranslate)
+        val deleteButton = wordPairView.findViewById<ImageButton>(R.id.buttonDelete)
         val addButton = wordPairView.findViewById<Button>(R.id.buttonAdd)
         
         // Translate button handler
@@ -221,22 +285,43 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
         
-        // Add button handler
-        addButton.setOnClickListener {
-            val original = originalText.text.toString()
-            val translated = translatedText.text.toString()
-            if (original.isNotEmpty() && translated.isNotEmpty()) {
-                val delayText = binding.spinnerDelay.selectedItem.toString()
-                val delay = delayText.replace("s", "").toIntOrNull() ?: 2
-                addWordPair(original, translated, delay)
-                
-                // Clear the input fields
-                originalText.text?.clear()
+        // Right word click handler - play single word pair
+        translatedText.setOnClickListener {
+            playSingleWordPair(wordPairView)
+        }
+        
+        // Delete button handler - clears fields or removes row
+        deleteButton.setOnClickListener {
+            val totalRows = binding.containerWordPairs.childCount
+            if (totalRows == 1) {
+                // If only one row, just clear the fields
+                originalText.setText("")
                 translatedText.text = "Translation will appear here"
+            } else {
+                // If more than one row, remove the row
+                binding.containerWordPairs.removeView(wordPairView)
+                updateRowCount()
+                // Show add button on the last remaining row
+                showAddButtonOnLastRow()
             }
         }
         
+        // Add button handler - adds new row and hides this button
+        addButton.setOnClickListener {
+            // Hide this add button
+            addButton.visibility = View.GONE
+            // Add a new empty input row
+            addInitialWordPairItem()
+        }
+        
+
+        
+
+        
         binding.containerWordPairs.addView(wordPairView)
+        updateRowCount()
+        // Show add button on the newly added row (which is now the last row)
+        showAddButtonOnLastRow()
     }
 
     fun translateWord(text: String, fromLanguage: String, toLanguage: String, callback: (String) -> Unit) {
