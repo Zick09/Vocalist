@@ -1,14 +1,14 @@
 [
     {
-        "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-mergeDebugResources-3:\\layout\\word_pair_item.xml",
-        "source": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-main-6:\\layout\\word_pair_item.xml"
+        "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\9.0-milestone-1\\com.ninebit.mynewapp-mergeDebugResources-3:\\layout\\word_pair_item.xml",
+        "source": "C:\\Users\\Azamat\\.gradle\\daemon\\9.0-milestone-1\\com.ninebit.mynewapp-main-6:\\layout\\word_pair_item.xml"
     },
     {
-        "merged": "com.ninebit.mynewapp-mergeDebugResources-3:/layout/activity_main.xml",
-        "source": "com.ninebit.mynewapp-main-6:/layout/activity_main.xml"
+        "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\9.0-milestone-1\\com.ninebit.mynewapp-mergeDebugResources-3:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\Azamat\\.gradle\\daemon\\9.0-milestone-1\\com.ninebit.mynewapp-main-6:\\layout\\activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-mergeDebugResources-3:\\layout\\activity_main.xml",
-        "source": "C:\\Users\\Azamat\\.gradle\\daemon\\8.13\\com.ninebit.mynewapp-main-6:\\layout\\activity_main.xml"
+        "merged": "com.ninebit.mynewapp-mergeDebugResources-3:/layout/word_pair_item.xml",
+        "source": "com.ninebit.mynewapp-main-6:/layout/word_pair_item.xml"
     }
 ]

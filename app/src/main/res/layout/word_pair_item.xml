@@ -89,7 +89,7 @@
 
     </LinearLayout>
 
-    <!-- Add Row Button -->
+    <!-- Add Button -->
     <Button
         android:id="@+id/buttonAdd"
         android:layout_width="wrap_content"

@@ -4,7 +4,7 @@
             "outputFile": "com.ninebit.mynewapp-mergeDebugResources-2:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\749ee703c6369e1a92206c5b4a9696a4\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\9.0-milestone-1\\transforms\\e175182e90533c229a6c72571ead61e4\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\571527440a92d04ea0460857a4f9934e\\transformed\\material-1.11.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\9.0-milestone-1\\transforms\\aace80564e71dfc8174f41759e931bc4\\transformed\\material-1.11.0\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

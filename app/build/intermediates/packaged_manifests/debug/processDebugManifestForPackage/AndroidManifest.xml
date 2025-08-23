@@ -34,6 +34,7 @@
         android:theme="@style/Theme.MyNewApp" >
         <activity
             android:name="com.ninebit.mynewapp.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:theme="@style/Theme.MyNewApp" >
             <intent-filter>

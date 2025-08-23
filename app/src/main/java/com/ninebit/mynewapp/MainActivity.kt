@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var currentIndex = 0
     private var translator: Translator? = null
     private var currentHighlightedView: View? = null
+    
+    // State restoration variables
+    private var wasPlayingBeforeConfigChange = false
+    private var savedCurrentIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,18 +50,37 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         loadSavedData()
         updateRowCount()
         
-        // Only add initial empty row if no data was loaded
+        // Ensure we have at least one row
         if (binding.containerWordPairs.childCount == 0) {
             addInitialWordPairItem()
         }
         
         // Show add button on the last row
         showAddButtonOnLastRow()
+        
+        // Restore playback state if it was interrupted by config change
+        val wasPlaying = sharedPrefs.getBoolean("wasPlaying", false)
+        val savedIndex = sharedPrefs.getInt("currentIndex", 0)
+        
+        if (wasPlaying || wasPlayingBeforeConfigChange) {
+            android.util.Log.d("MainActivity", "Restoring playback state - was playing: $wasPlaying, saved index: $savedIndex")
+            // Small delay to ensure UI is fully loaded
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                currentIndex = if (wasPlayingBeforeConfigChange) savedCurrentIndex else savedIndex
+                resumePlayback()
+                wasPlayingBeforeConfigChange = false
+                
+                // Clear saved state
+                val editor = sharedPrefs.edit()
+                editor.putBoolean("wasPlaying", false)
+                editor.apply()
+            }, 500)
+        }
     }
 
     private fun setupSpinners() {
         // Language options
-        val languages = arrayOf("English", "Spanish", "French", "German", "Italian", "Portuguese", "Russian", "Japanese", "Korean", "Chinese")
+        val languages = arrayOf("English", "Spanish", "French", "German", "Italian", "Portuguese", "Russian")
         
         val fromAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
         fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -136,8 +159,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             return
         }
 
-        isPlaying = true
+        // Always start from the beginning when Play button is pressed
         currentIndex = 0
+
+        isPlaying = true
         binding.buttonPlay.isEnabled = false
         binding.buttonStop.isEnabled = true
         
@@ -146,7 +171,33 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
         binding.buttonStop.setBackgroundColor(android.graphics.Color.RED)
 
+        android.util.Log.d("MainActivity", "Starting playback from index: $currentIndex")
+        playNextWord(wordPairViews)
+    }
 
+    @SuppressLint("ResourceAsColor")
+    private fun resumePlayback() {
+        val wordPairViews = getWordPairViews()
+        if (wordPairViews.isEmpty()) {
+            Toast.makeText(this, "No word pairs to play", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Ensure currentIndex is within bounds for resume
+        if (currentIndex >= wordPairViews.size) {
+            currentIndex = 0
+        }
+
+        isPlaying = true
+        binding.buttonPlay.isEnabled = false
+        binding.buttonStop.isEnabled = true
+        
+        // Change Stop button text and icon color to white, background to red
+        binding.buttonStop.setTextColor(android.graphics.Color.WHITE)
+        binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+        binding.buttonStop.setBackgroundColor(android.graphics.Color.RED)
+
+        android.util.Log.d("MainActivity", "Resuming playback from index: $currentIndex")
         playNextWord(wordPairViews)
     }
 
@@ -215,9 +266,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             "Italian" -> Locale.ITALIAN
             "Portuguese" -> Locale("pt")
             "Russian" -> Locale("ru")
-            "Japanese" -> Locale.JAPANESE
-            "Korean" -> Locale.KOREAN
-            "Chinese" -> Locale.CHINESE
             else -> Locale.US
         }
     }
@@ -229,12 +277,23 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonStop.isEnabled = false
         
         // Reset Stop button text and icon color to default, remove red background
-        binding.buttonStop.setTextColor(R.color.inactive2)
-        binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(R.color.inactive2)
+        binding.buttonStop.setTextColor(R.color.white)
+        binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(R.color.white)
         binding.buttonStop.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         textToSpeech.stop()
         // Remove any remaining highlights
         removeAllHighlights()
+        
+        // Reset index to 0 so next Play starts from beginning
+        currentIndex = 0
+        
+        // Clear saved playback state
+        val sharedPrefs = getSharedPreferences("WordPairsData", MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putBoolean("wasPlaying", false)
+        editor.apply()
+        
+        wasPlayingBeforeConfigChange = false
     }
 
     private fun getWordPairViews(): List<View> {
@@ -453,10 +512,26 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             "Italian" -> "it"
             "Portuguese" -> "pt"
             "Russian" -> "ru"
-            "Japanese" -> "ja"
-            "Korean" -> "ko"
-            "Chinese" -> "zh"
             else -> "en"
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        
+        // Save current playback state before any potential issues
+        if (isPlaying) {
+            wasPlayingBeforeConfigChange = true
+            savedCurrentIndex = currentIndex
+            
+            // Save playback state to SharedPreferences
+            val sharedPrefs = getSharedPreferences("WordPairsData", MODE_PRIVATE)
+            val editor = sharedPrefs.edit()
+            editor.putBoolean("wasPlaying", true)
+            editor.putInt("currentIndex", currentIndex)
+            editor.apply()
+            
+            android.util.Log.d("MainActivity", "Config change: saving playback state - playing: $isPlaying, index: $currentIndex")
         }
     }
 
@@ -483,14 +558,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             val originalText = rowView.findViewById<TextInputEditText>(R.id.editTextWord)
             val translatedText = rowView.findViewById<TextView>(R.id.textViewTranslation)
             
-            val original = originalText.text.toString()
+            val original = originalText.text.toString().trim()
             val translated = translatedText.text.toString()
             
             // Save only rows with content
             if (original.isNotEmpty()) {
                 // If there's original text, save it with translation (even if empty)
                 val translationToSave = if (translated.isNotEmpty() && translated != "Translation will appear here") {
-                    translated
+                    translated.trim()
                 } else {
                     ""
                 }
@@ -529,12 +604,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (wordPairsJson != null && wordPairsJson.isNotEmpty()) {
             try {
                 val jsonArray = org.json.JSONArray(wordPairsJson)
-                // Clear the initial empty row
+                // Clear the container completely to prevent duplicates
                 binding.containerWordPairs.removeAllViews()
                 
                 // Debug log to verify loading order
                 android.util.Log.d("MainActivity", "Loading word pairs in order: $wordPairsJson")
                 
+                var hasValidData = false
                 // Add saved word pairs in order
                 for (i in 0 until jsonArray.length()) {
                     val wordPair = jsonArray.getString(i)
@@ -543,14 +619,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         val original = parts[0]
                         val translated = parts[1]
                         
-                        if (original.isEmpty() && translated.isEmpty()) {
-                            // Skip completely empty rows - they will be added automatically if needed
-                            continue
-                        } else {
+                        if (original.isNotEmpty()) {
                             // Row with content
                             addSavedWordPair(original, translated)
+                            hasValidData = true
                         }
+                        // Skip completely empty rows
                     }
+                }
+                
+                // If no valid data was loaded, add an empty row
+                if (!hasValidData) {
+                    addInitialWordPairItem()
                 }
             } catch (e: Exception) {
                 // Log error and start fresh if JSON parsing fails
@@ -559,7 +639,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 val editor = sharedPrefs.edit()
                 editor.remove("wordPairs")
                 editor.apply()
+                // Add an empty row if loading failed
+                addInitialWordPairItem()
             }
+        } else {
+            // No saved data, add an empty row
+            addInitialWordPairItem()
         }
     }
 
@@ -582,11 +667,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         })
         
         // Set saved values
-        originalText.setText(original)
+        originalText.setText(original.trim())
         translatedText.text = if (translated.isEmpty()) {
             "Translation will appear here"
         } else {
-            translated
+            translated.trim()
         }
         
         // Translate button handler
