@@ -4,7 +4,7 @@
             "outputFile": "com.ninebit.mynewapp-mergeDebugResources-2:/values-hdpi-v4/values-hdpi-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\9.0-milestone-1\\transforms\\e175182e90533c229a6c72571ead61e4\\transformed\\appcompat-1.6.1\\res\\values-hdpi-v4\\values-hdpi-v4.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\749ee703c6369e1a92206c5b4a9696a4\\transformed\\appcompat-1.6.1\\res\\values-hdpi-v4\\values-hdpi-v4.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

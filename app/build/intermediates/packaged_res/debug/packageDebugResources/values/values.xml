@@ -5,15 +5,17 @@
     <color name="error">#FFB00020</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="inactive">#9D7030</color>
-    <color name="inactive2">#FFDF9F44</color>
+    <color name="inactive2">#815C37</color>
     <color name="inactive3">#FFFFFF</color>
     <color name="on_background">#FF000000</color>
     <color name="on_error">#FFFFFFFF</color>
     <color name="on_primary">#FFFFFFFF</color>
     <color name="on_secondary">#FFFFFFFF</color>
     <color name="on_surface">#FF000000</color>
-    <color name="primary">#4D96FE</color>
-    <color name="primary_variant">#4D96FE</color>
+    <color name="orange">#FEB54D</color>
+    <color name="play_button_color">#4CAF50</color>
+    <color name="primary">#FEB54D</color>
+    <color name="primary_variant">#FEB54D</color>
     <color name="secondary">#4D96FE</color>
     <color name="secondary_variant">#4D96FE</color>
     <color name="stop_red">#FF0000</color>
@@ -33,6 +35,17 @@
     <string name="translation_failed">Translation failed</string>
     <string name="translation_placeholder">Translation will appear here</string>
     <string name="tts_init_failed">Text-to-Speech initialization failed</string>
+    <style name="PlayButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/play_button_color</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+    <style name="TextAppearance.MyNewApp.ActionBar.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">serif</item>
+    </style>
     <style name="Theme.MyNewApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         
         <item name="colorPrimary">@color/primary</item>
@@ -45,5 +58,40 @@
         
         <item name="android:statusBarColor" ns1:targetApi="l">?attr/colorPrimaryVariant</item>
         
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        
+        <item name="actionBarStyle">@style/Widget.MyNewApp.ActionBar</item>
+        
+    </style>
+    <style name="Theme.MyNewApp.Light" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        
+        <item name="android:statusBarColor" ns1:targetApi="l">?attr/colorPrimaryVariant</item>
+        
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        
+        <item name="actionBarStyle">@style/Widget.MyNewApp.ActionBar</item>
+    </style>
+    <style name="Widget.MyNewApp.ActionBar" parent="Widget.MaterialComponents.ActionBar.Primary">
+        <item name="titleTextStyle">@style/TextAppearance.MyNewApp.ActionBar.Title</item>
     </style>
 </resources>

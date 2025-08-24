@@ -4,7 +4,7 @@
             "outputFile": "com.ninebit.mynewapp-mergeReleaseResources-2:/values-it/values-it.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\59454aae29c5c30336fe3d81bd8343f8\\transformed\\play-services-base-18.1.0\\res\\values-it\\values.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\ae062610947e9566502ddd249fdeec93\\transformed\\jetified-play-services-base-18.1.0\\res\\values-it\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -57,6 +57,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\2a19f8b96e81f2af1b257e9a4e591f87\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-it\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "131",
+                        "endOffsets": "326"
+                    },
+                    "to": {
+                        "startLines": "56",
+                        "startColumns": "4",
+                        "startOffsets": "5516",
+                        "endColumns": "135",
+                        "endOffsets": "5647"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\4f5b8d2c5d0e9d9fcb7d15b8aa3db2b7\\transformed\\core-1.12.0\\res\\values-it\\values-it.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
@@ -88,23 +105,6 @@
                         "startOffsets": "318,423,526,635,719,824,943,1021,1096,1188,1282,1375,1469,1570,1664,1761,1856,1948,2040,2121,2227,2334,2432,2536,2642,2749,2912,11828",
                         "endColumns": "104,102,108,83,104,118,77,74,91,93,92,93,100,93,96,94,91,91,80,105,106,97,103,105,106,162,99,81",
                         "endOffsets": "418,521,630,714,819,938,1016,1091,1183,1277,1370,1464,1565,1659,1756,1851,1943,2035,2116,2222,2329,2427,2531,2637,2744,2907,3007,11905"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\a64d5d9ebbba7b7475c2f3f7c3f73683\\transformed\\play-services-basement-18.1.0\\res\\values-it\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "195",
-                        "endColumns": "131",
-                        "endOffsets": "326"
-                    },
-                    "to": {
-                        "startLines": "56",
-                        "startColumns": "4",
-                        "startOffsets": "5516",
-                        "endColumns": "135",
-                        "endOffsets": "5647"
                     }
                 }
             ]

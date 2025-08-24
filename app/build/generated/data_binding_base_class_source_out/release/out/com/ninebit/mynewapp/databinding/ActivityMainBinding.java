@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -49,12 +50,15 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final Spinner spinnerToLanguage;
 
+  @NonNull
+  public final TextView textViewRowCount;
+
   private ActivityMainBinding(@NonNull ConstraintLayout rootView,
       @NonNull MaterialButton buttonPlay, @NonNull MaterialButton buttonStop,
       @NonNull LinearLayout containerWordPairs, @NonNull LinearLayout layoutLanguageSelection,
       @NonNull LinearLayout layoutPlaybackControls, @NonNull ScrollView scrollViewWordPairs,
       @NonNull Spinner spinnerDelay, @NonNull Spinner spinnerFromLanguage,
-      @NonNull Spinner spinnerToLanguage) {
+      @NonNull Spinner spinnerToLanguage, @NonNull TextView textViewRowCount) {
     this.rootView = rootView;
     this.buttonPlay = buttonPlay;
     this.buttonStop = buttonStop;
@@ -65,6 +69,7 @@ public final class ActivityMainBinding implements ViewBinding {
     this.spinnerDelay = spinnerDelay;
     this.spinnerFromLanguage = spinnerFromLanguage;
     this.spinnerToLanguage = spinnerToLanguage;
+    this.textViewRowCount = textViewRowCount;
   }
 
   @Override
@@ -148,9 +153,15 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.textViewRowCount;
+      TextView textViewRowCount = ViewBindings.findChildViewById(rootView, id);
+      if (textViewRowCount == null) {
+        break missingId;
+      }
+
       return new ActivityMainBinding((ConstraintLayout) rootView, buttonPlay, buttonStop,
           containerWordPairs, layoutLanguageSelection, layoutPlaybackControls, scrollViewWordPairs,
-          spinnerDelay, spinnerFromLanguage, spinnerToLanguage);
+          spinnerDelay, spinnerFromLanguage, spinnerToLanguage, textViewRowCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

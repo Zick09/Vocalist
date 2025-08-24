@@ -1,10 +1,14 @@
 package com.ninebit.mynewapp
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,8 +36,33 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Force light theme for better compatibility with Samsung devices
+        // TEMPORARILY DISABLED FOR DEBUGGING
+        /*
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                // Use reflection to access forceDarkAllowed if available
+                val decorView = window.decorView
+                val forceDarkAllowedField = decorView.javaClass.getDeclaredField("forceDarkAllowed")
+                forceDarkAllowedField.isAccessible = true
+                forceDarkAllowedField.setBoolean(decorView, false)
+                Log.d("MainActivity", "forceDarkAllowed set to false via reflection")
+            }
+        } catch (e: Exception) {
+            // Ignore if forceDarkAllowed is not available
+            Log.d("MainActivity", "forceDarkAllowed not available: ${e.message}")
+        }
+        
+        // Additional Samsung compatibility fix
+        fixSamsungTextColors()
+        */
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        // Set ActionBar title and style
+        setActionBarTitleFont()
 
         // Clear old format data to ensure proper order preservation
         val sharedPrefs = getSharedPreferences("WordPairsData", MODE_PRIVATE)
@@ -41,7 +70,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             val editor = sharedPrefs.edit()
             editor.remove("wordPairs")
             editor.apply()
-            android.util.Log.d("MainActivity", "Cleared old format data")
+            Log.d("MainActivity", "Cleared old format data")
         }
 
         setupSpinners()
@@ -63,7 +92,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val savedIndex = sharedPrefs.getInt("currentIndex", 0)
         
         if (wasPlaying || wasPlayingBeforeConfigChange) {
-            android.util.Log.d("MainActivity", "Restoring playback state - was playing: $wasPlaying, saved index: $savedIndex")
+            Log.d("MainActivity", "Restoring playback state - was playing: $wasPlaying, saved index: $savedIndex")
             // Small delay to ensure UI is fully loaded
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                 currentIndex = if (wasPlayingBeforeConfigChange) savedCurrentIndex else savedIndex
@@ -125,6 +154,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun setupButtons() {
+        // Initialize Play button with green color
+        setPlayButtonActive()
+        
         binding.buttonPlay.setOnClickListener {
             if (!isPlaying) {
                 startPlayback()
@@ -170,8 +202,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonStop.setTextColor(android.graphics.Color.WHITE)
         binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
         binding.buttonStop.setBackgroundColor(android.graphics.Color.RED)
+        
 
-        android.util.Log.d("MainActivity", "Starting playback from index: $currentIndex")
+        // Set Play button to inactive state
+        setPlayButtonInactive()
+
+        Log.d("MainActivity", "Starting playback from index: $currentIndex")
         playNextWord(wordPairViews)
     }
 
@@ -197,7 +233,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
         binding.buttonStop.setBackgroundColor(android.graphics.Color.RED)
 
-        android.util.Log.d("MainActivity", "Resuming playback from index: $currentIndex")
+        // Set Play button to inactive state
+        setPlayButtonInactive()
+
+        Log.d("MainActivity", "Resuming playback from index: $currentIndex")
         playNextWord(wordPairViews)
     }
 
@@ -281,6 +320,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.buttonStop.iconTint = android.content.res.ColorStateList.valueOf(R.color.white)
         binding.buttonStop.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         textToSpeech.stop()
+
+        // Reset Play button to active state (green)
+        setPlayButtonActive()
+
         // Remove any remaining highlights
         removeAllHighlights()
         
@@ -422,20 +465,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         })
         
-        // Translate button handler
-        translateButton.setOnClickListener {
-            val text = originalText.text.toString()
-            if (text.isNotEmpty()) {
-                val fromLang = binding.spinnerFromLanguage.selectedItem.toString()
-                val toLang = binding.spinnerToLanguage.selectedItem.toString()
-                translateWord(text, fromLang, toLang) { translatedResult ->
-                    runOnUiThread {
-                        translatedText.text = translatedResult
-                        saveData() // Save after translation
-                    }
+        // Add focus listener to hide hint when focused
+        originalText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                originalText.hint = ""
+            } else {
+                if (originalText.text.toString().trim().isEmpty()) {
+                    originalText.hint = "Enter word"
                 }
             }
         }
+        
+        // Translate button handler
+        setupTranslateButton(translateButton, originalText, translatedText)
         
         // Right word click handler - play single word pair
         translatedText.setOnClickListener {
@@ -478,29 +520,162 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         updateRowCount()
         // Show add button on the newly added row (which is now the last row)
         showAddButtonOnLastRow()
+        
+        // Apply Samsung text color fixes to new row
+        if (android.os.Build.MANUFACTURER.lowercase().contains("samsung")) {
+            applyTextColorFixes(wordPairView)
+        }
+        
+        // Set custom ActionBar title font
+        setActionBarTitleFont()
+    }
+
+    private fun setupDeleteButton(deleteButton: ImageButton, originalText: TextInputEditText, translatedText: TextView, wordPairView: View) {
+        deleteButton.setOnClickListener {
+            val totalRows = binding.containerWordPairs.childCount
+            if (totalRows == 1) {
+                // If only one row, just clear the fields
+                originalText.setText("")
+                originalText.hint = "Enter word" // Restore hint when clearing
+                translatedText.text = "Translation will appear here"
+            } else {
+                // If more than one row, remove the row
+                animateRowRemoval(wordPairView) {
+                    updateRowCount()
+                    // Show add button on the last remaining row
+                    showAddButtonOnLastRow()
+                }
+            }
+            saveData()
+        }
+    }
+    
+    private fun setupTranslateButton(translateButton: ImageButton, originalText: TextInputEditText, translatedText: TextView) {
+        translateButton.setOnClickListener {
+            val text = originalText.text.toString().trim()
+            if (text.isEmpty()) {
+                Toast.makeText(this, "Please enter a word to translate", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // Check if source and target languages are the same
+            val fromLang = binding.spinnerFromLanguage.selectedItem.toString()
+            val toLang = binding.spinnerToLanguage.selectedItem.toString()
+            
+            if (fromLang == toLang) {
+                Toast.makeText(this, "Source and target languages cannot be the same", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // Check network connectivity
+            val connectivityManager = getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val isConnected = networkCapabilities?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+            
+            if (!isConnected) {
+                Toast.makeText(this, "No internet connection. Please check your network.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            
+            // Disable translate button to prevent multiple clicks
+            translateButton.isEnabled = false
+            translateButton.alpha = 0.5f
+            
+            Log.d("MainActivity", "Translate button clicked for text: '$text'")
+            
+            translateWord(text, fromLang, toLang) { translatedResult ->
+                runOnUiThread {
+                    // Re-enable translate button
+                    translateButton.isEnabled = true
+                    translateButton.alpha = 1.0f
+                    
+                    translatedText.text = translatedResult
+                    saveData() // Save after translation
+                    
+                    // Translation completed successfully
+                }
+            }
+        }
     }
 
     fun translateWord(text: String, fromLanguage: String, toLanguage: String, callback: (String) -> Unit) {
+        Log.d("MainActivity", "Starting translation: '$text' from $fromLanguage to $toLanguage")
+        
+        // Check if text is empty
+        if (text.trim().isEmpty()) {
+            callback("Please enter text to translate")
+            return
+        }
+        
+        val sourceLangCode = getLanguageCode(fromLanguage)
+        val targetLangCode = getLanguageCode(toLanguage)
+        
+        // Check if source and target languages are the same
+        if (sourceLangCode == targetLangCode) {
+            callback(text) // Return original text if same language
+            return
+        }
+        
+        Log.d("MainActivity", "Language codes: $sourceLangCode -> $targetLangCode")
+        
         val options = TranslatorOptions.Builder()
-            .setSourceLanguage(getLanguageCode(fromLanguage))
-            .setTargetLanguage(getLanguageCode(toLanguage))
+            .setSourceLanguage(sourceLangCode)
+            .setTargetLanguage(targetLangCode)
             .build()
+        
+        // Close previous translator if exists
+        translator?.close()
         
         translator = Translation.getClient(options)
         
-        translator?.downloadModelIfNeeded()
-            ?.addOnSuccessListener {
-                translator?.translate(text)
-                    ?.addOnSuccessListener { translatedText ->
-                        callback(translatedText)
+        // Show loading state
+        runOnUiThread {
+            // Downloading translation model
+        }
+        
+        // Add timeout for model download
+        val timeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val timeoutRunnable = Runnable {
+            Log.e("MainActivity", "Translation timeout")
+            translator?.close()
+            callback("Translation timeout. Please check your internet connection and try again.")
+        }
+        timeoutHandler.postDelayed(timeoutRunnable, 45000) // 45 seconds timeout
+        
+        try {
+            translator?.downloadModelIfNeeded()
+                ?.addOnSuccessListener {
+                    timeoutHandler.removeCallbacks(timeoutRunnable)
+                    Log.d("MainActivity", "Model downloaded successfully")
+                    runOnUiThread {
+                        // Translation in progress
                     }
-                    ?.addOnFailureListener { exception ->
-                        callback("Translation failed: ${exception.message}")
-                    }
-            }
-            ?.addOnFailureListener { exception ->
-                callback("Model download failed: ${exception.message}")
-            }
+                    
+                    translator?.translate(text)
+                        ?.addOnSuccessListener { translatedText ->
+                            Log.d("MainActivity", "Translation successful: '$translatedText'")
+                            callback(translatedText)
+                        }
+                        ?.addOnFailureListener { exception ->
+                            Log.e("MainActivity", "Translation failed", exception)
+                            val errorMsg = "Translation failed: ${exception.message ?: "Unknown error"}"
+                            Log.e("MainActivity", errorMsg)
+                            callback(errorMsg)
+                        }
+                }
+                ?.addOnFailureListener { exception ->
+                    timeoutHandler.removeCallbacks(timeoutRunnable)
+                    Log.e("MainActivity", "Model download failed", exception)
+                    val errorMsg = "Model download failed: ${exception.message ?: "Unknown error"}. Please check your internet connection."
+                    Log.e("MainActivity", errorMsg)
+                    callback(errorMsg)
+                }
+        } catch (e: Exception) {
+            timeoutHandler.removeCallbacks(timeoutRunnable)
+            Log.e("MainActivity", "Translation setup failed", e)
+            val errorMsg = "Translation setup failed: ${e.message ?: "Unknown error"}"
+            callback(errorMsg)
+        }
     }
 
     private fun getLanguageCode(language: String): String {
@@ -514,6 +689,30 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             "Russian" -> "ru"
             else -> "en"
         }
+    }
+    
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
+    }
+    
+    private fun setPlayButtonActive() {
+        binding.buttonPlay.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.secondary)))
+        binding.buttonPlay.setTextColor(android.graphics.Color.WHITE)
+        binding.buttonPlay.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+    }
+    
+    private fun setPlayButtonInactive() {
+        binding.buttonPlay.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT))
+        binding.buttonPlay.setTextColor(android.graphics.Color.rgb(129,92,55))
+        binding.buttonPlay.iconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.rgb(129,92,55))
     }
 
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
@@ -531,7 +730,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             editor.putInt("currentIndex", currentIndex)
             editor.apply()
             
-            android.util.Log.d("MainActivity", "Config change: saving playback state - playing: $isPlaying, index: $currentIndex")
+            Log.d("MainActivity", "Config change: saving playback state - playing: $isPlaying, index: $currentIndex")
         }
     }
 
@@ -584,7 +783,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         editor.apply()
         
         // Debug log to verify order
-        android.util.Log.d("MainActivity", "Saved word pairs in order: $jsonString")
+        Log.d("MainActivity", "Saved word pairs in order: $jsonString")
     }
 
     private fun loadSavedData() {
@@ -608,7 +807,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 binding.containerWordPairs.removeAllViews()
                 
                 // Debug log to verify loading order
-                android.util.Log.d("MainActivity", "Loading word pairs in order: $wordPairsJson")
+                Log.d("MainActivity", "Loading word pairs in order: $wordPairsJson")
                 
                 var hasValidData = false
                 // Add saved word pairs in order
@@ -634,7 +833,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 }
             } catch (e: Exception) {
                 // Log error and start fresh if JSON parsing fails
-                android.util.Log.e("MainActivity", "Error loading saved data: ${e.message}")
+                Log.e("MainActivity", "Error loading saved data: ${e.message}")
                 // Clear any old format data to prevent future issues
                 val editor = sharedPrefs.edit()
                 editor.remove("wordPairs")
@@ -666,6 +865,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         })
         
+        // Add focus listener to hide hint when focused
+        originalText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                originalText.hint = ""
+            } else {
+                if (originalText.text.toString().trim().isEmpty()) {
+                    originalText.hint = "Enter word"
+                }
+            }
+        }
+        
         // Set saved values
         originalText.setText(original.trim())
         translatedText.text = if (translated.isEmpty()) {
@@ -675,19 +885,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         
         // Translate button handler
-        translateButton.setOnClickListener {
-            val text = originalText.text.toString()
-            if (text.isNotEmpty()) {
-                val fromLang = binding.spinnerFromLanguage.selectedItem.toString()
-                val toLang = binding.spinnerToLanguage.selectedItem.toString()
-                translateWord(text, fromLang, toLang) { translatedResult ->
-                    runOnUiThread {
-                        translatedText.text = translatedResult
-                        saveData() // Save after translation
-                    }
-                }
-            }
-        }
+        setupTranslateButton(translateButton, originalText, translatedText)
         
         // Right word click handler - play single word pair
         translatedText.setOnClickListener {
@@ -761,5 +959,83 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             .setDuration(300) // 300ms duration
             .setInterpolator(android.view.animation.DecelerateInterpolator())
             .start()
+    }
+    
+    private fun fixSamsungTextColors() {
+        // Check if device is Samsung
+        val manufacturer = android.os.Build.MANUFACTURER.lowercase()
+        if (manufacturer.contains("samsung")) {
+            Log.d("MainActivity", "Samsung device detected, applying text color fixes")
+            
+            // Apply text color fixes after view is created
+            binding.root.post {
+                applyTextColorFixes(binding.root)
+            }
+        }
+    }
+    
+    private fun setActionBarTitleFont() {
+        try {
+            supportActionBar?.let { actionBar ->
+                // Set custom title
+                actionBar.title = getString(R.string.app_name)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Failed to set ActionBar title: ${e.message}")
+        }
+    }
+    
+    private fun applyTextColorFixes(view: View) {
+        when (view) {
+            is TextView -> {
+                try {
+                    // Always set text color to black for Samsung devices
+                    view.setTextColor(android.graphics.Color.BLACK)
+                    Log.d("MainActivity", "Set TextView text color to black")
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Failed to set TextView text color: ${e.message}")
+                }
+            }
+            is TextInputEditText -> {
+                try {
+                    // Always set text color to black for Samsung devices
+                    view.setTextColor(android.graphics.Color.BLACK)
+                    Log.d("MainActivity", "Set TextInputEditText text color to black")
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Failed to set TextInputEditText text color: ${e.message}")
+                }
+            }
+            is EditText -> {
+                try {
+                    // Always set text color to black for Samsung devices
+                    view.setTextColor(android.graphics.Color.BLACK)
+                    Log.d("MainActivity", "Set EditText text color to black")
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Failed to set EditText text color: ${e.message}")
+                }
+            }
+            is Button -> {
+                try {
+                    // Check if button text should be black (not for colored buttons)
+                    val buttonText = view.text.toString()
+                    if (buttonText == "+" || buttonText == "Play" || buttonText == "Stop") {
+                        // Keep original colors for these buttons
+                        Log.d("MainActivity", "Keeping original color for button: $buttonText")
+                    } else {
+                        view.setTextColor(android.graphics.Color.BLACK)
+                        Log.d("MainActivity", "Set Button text color to black")
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Failed to set Button text color: ${e.message}")
+                }
+            }
+        }
+        
+        // Apply to child views
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                applyTextColorFixes(view.getChildAt(i))
+            }
+        }
     }
 }

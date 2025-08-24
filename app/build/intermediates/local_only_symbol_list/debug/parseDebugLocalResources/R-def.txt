@@ -12,6 +12,8 @@ color on_error
 color on_primary
 color on_secondary
 color on_surface
+color orange
+color play_button_color
 color primary
 color primary_variant
 color secondary
@@ -71,6 +73,10 @@ string translation_error
 string translation_failed
 string translation_placeholder
 string tts_init_failed
+style PlayButtonStyle
+style TextAppearance.MyNewApp.ActionBar.Title
 style Theme.MyNewApp
+style Theme.MyNewApp.Light
+style Widget.MyNewApp.ActionBar
 xml backup_rules
 xml data_extraction_rules

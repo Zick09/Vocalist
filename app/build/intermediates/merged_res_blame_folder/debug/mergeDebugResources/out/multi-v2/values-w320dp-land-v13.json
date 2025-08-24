@@ -4,7 +4,7 @@
             "outputFile": "com.ninebit.mynewapp-mergeDebugResources-2:/values-w320dp-land-v13/values-w320dp-land-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\9.0-milestone-1\\transforms\\aace80564e71dfc8174f41759e931bc4\\transformed\\material-1.11.0\\res\\values-w320dp-land-v13\\values-w320dp-land-v13.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\571527440a92d04ea0460857a4f9934e\\transformed\\material-1.11.0\\res\\values-w320dp-land-v13\\values-w320dp-land-v13.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

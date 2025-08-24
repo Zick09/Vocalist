@@ -21,6 +21,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\ae062610947e9566502ddd249fdeec93\\transformed\\jetified-play-services-base-18.1.0\\res\\values-lv\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+                        "startOffsets": "193,296,453,582,686,824,951,1064,1166,1337,1442,1607,1738,1903,2054,2114,2178",
+                        "endColumns": "102,156,128,103,137,126,112,101,170,104,164,130,164,150,59,63,84",
+                        "endOffsets": "295,452,581,685,823,950,1063,1165,1336,1441,1606,1737,1902,2053,2113,2177,2262"
+                    },
+                    "to": {
+                        "startLines": "49,50,51,52,53,54,55,56,58,59,60,61,62,63,64,65,66",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4753,4860,5021,5154,5262,5404,5535,5652,5924,6099,6208,6377,6512,6681,6836,6900,6968",
+                        "endColumns": "106,160,132,107,141,130,116,105,174,108,168,134,168,154,63,67,88",
+                        "endOffsets": "4855,5016,5149,5257,5399,5530,5647,5753,6094,6203,6372,6507,6676,6831,6895,6963,7052"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\4f5b8d2c5d0e9d9fcb7d15b8aa3db2b7\\transformed\\core-1.12.0\\res\\values-lv\\values-lv.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
@@ -57,23 +74,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\59454aae29c5c30336fe3d81bd8343f8\\transformed\\play-services-base-18.1.0\\res\\values-lv\\values.xml",
-                    "from": {
-                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
-                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-                        "startOffsets": "193,296,453,582,686,824,951,1064,1166,1337,1442,1607,1738,1903,2054,2114,2178",
-                        "endColumns": "102,156,128,103,137,126,112,101,170,104,164,130,164,150,59,63,84",
-                        "endOffsets": "295,452,581,685,823,950,1063,1165,1336,1441,1606,1737,1902,2053,2113,2177,2262"
-                    },
-                    "to": {
-                        "startLines": "49,50,51,52,53,54,55,56,58,59,60,61,62,63,64,65,66",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4753,4860,5021,5154,5262,5404,5535,5652,5924,6099,6208,6377,6512,6681,6836,6900,6968",
-                        "endColumns": "106,160,132,107,141,130,116,105,174,108,168,134,168,154,63,67,88",
-                        "endOffsets": "4855,5016,5149,5257,5399,5530,5647,5753,6094,6203,6372,6507,6676,6831,6895,6963,7052"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\24550f90a233bfbd9cee7053d07848a8\\transformed\\navigation-ui-2.7.6\\res\\values-lv\\values-lv.xml",
                     "from": {
                         "startLines": "2,3",
@@ -91,7 +91,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\a64d5d9ebbba7b7475c2f3f7c3f73683\\transformed\\play-services-basement-18.1.0\\res\\values-lv\\values.xml",
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\2a19f8b96e81f2af1b257e9a4e591f87\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-lv\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",

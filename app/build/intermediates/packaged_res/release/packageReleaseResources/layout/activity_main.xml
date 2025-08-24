@@ -30,6 +30,9 @@
             android:layout_weight="1"
             android:padding="12dp"
             android:text="from"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
             tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
@@ -40,6 +43,9 @@
             android:layout_weight="1"
             android:padding="12dp"
             android:text="   to"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
             tools:ignore="TouchTargetSizeCheck" />
 
         <!-- Delay Selection Spinner -->
@@ -49,6 +55,9 @@
             android:minWidth="80dp"
             android:padding="12dp"
             android:text="delay"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
             tools:ignore="TouchTargetSizeCheck" />
 
     </LinearLayout>
@@ -125,6 +134,8 @@
 
     </ScrollView>
 
+
+
     <!-- Playback Controls -->
     <LinearLayout
         android:id="@+id/layoutPlaybackControls"
@@ -136,13 +147,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <TextView
+            android:id="@+id/textViewRowCount"
+            android:layout_width="98dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/text_field_background"
+            android:padding="12dp"
+            android:text="Total: 0"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:ignore="TouchTargetSizeCheck" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonPlay"
+            style="@style/PlayButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="0dp"
             android:text="Play"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:cornerRadius="24dp"
             app:icon="@drawable/ic_play"
             app:iconGravity="textStart" />

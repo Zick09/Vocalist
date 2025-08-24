@@ -4,40 +4,6 @@
             "outputFile": "com.ninebit.mynewapp-mergeReleaseResources-2:/values-fr/values-fr.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\59454aae29c5c30336fe3d81bd8343f8\\transformed\\play-services-base-18.1.0\\res\\values-fr\\values.xml",
-                    "from": {
-                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
-                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-                        "startOffsets": "193,295,471,597,702,869,998,1115,1224,1398,1506,1687,1819,1975,2150,2219,2282",
-                        "endColumns": "101,175,125,104,166,128,116,108,173,107,180,131,155,174,68,62,79",
-                        "endOffsets": "294,470,596,701,868,997,1114,1223,1397,1505,1686,1818,1974,2149,2218,2281,2361"
-                    },
-                    "to": {
-                        "startLines": "48,49,50,51,52,53,54,55,57,58,59,60,61,62,63,64,65",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4563,4669,4849,4979,5088,5259,5392,5513,5791,5969,6081,6266,6402,6562,6741,6814,6881",
-                        "endColumns": "105,179,129,108,170,132,120,112,177,111,184,135,159,178,72,66,83",
-                        "endOffsets": "4664,4844,4974,5083,5254,5387,5508,5621,5964,6076,6261,6397,6557,6736,6809,6876,6960"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\a64d5d9ebbba7b7475c2f3f7c3f73683\\transformed\\play-services-basement-18.1.0\\res\\values-fr\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "195",
-                        "endColumns": "160",
-                        "endOffsets": "355"
-                    },
-                    "to": {
-                        "startLines": "56",
-                        "startColumns": "4",
-                        "startOffsets": "5626",
-                        "endColumns": "164",
-                        "endOffsets": "5786"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\571527440a92d04ea0460857a4f9934e\\transformed\\material-1.11.0\\res\\values-fr\\values-fr.xml",
                     "from": {
                         "startLines": "2,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73",
@@ -74,6 +40,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\ae062610947e9566502ddd249fdeec93\\transformed\\jetified-play-services-base-18.1.0\\res\\values-fr\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+                        "startOffsets": "193,295,471,597,702,869,998,1115,1224,1398,1506,1687,1819,1975,2150,2219,2282",
+                        "endColumns": "101,175,125,104,166,128,116,108,173,107,180,131,155,174,68,62,79",
+                        "endOffsets": "294,470,596,701,868,997,1114,1223,1397,1505,1686,1818,1974,2149,2218,2281,2361"
+                    },
+                    "to": {
+                        "startLines": "48,49,50,51,52,53,54,55,57,58,59,60,61,62,63,64,65",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4563,4669,4849,4979,5088,5259,5392,5513,5791,5969,6081,6266,6402,6562,6741,6814,6881",
+                        "endColumns": "105,179,129,108,170,132,120,112,177,111,184,135,159,178,72,66,83",
+                        "endOffsets": "4664,4844,4974,5083,5254,5387,5508,5621,5964,6076,6261,6397,6557,6736,6809,6876,6960"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\24550f90a233bfbd9cee7053d07848a8\\transformed\\navigation-ui-2.7.6\\res\\values-fr\\values-fr.xml",
                     "from": {
                         "startLines": "2,3",
@@ -88,6 +71,23 @@
                         "startOffsets": "11763,11866",
                         "endColumns": "102,125",
                         "endOffsets": "11861,11987"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Azamat\\.gradle\\caches\\8.13\\transforms\\2a19f8b96e81f2af1b257e9a4e591f87\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-fr\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "160",
+                        "endOffsets": "355"
+                    },
+                    "to": {
+                        "startLines": "56",
+                        "startColumns": "4",
+                        "startOffsets": "5626",
+                        "endColumns": "164",
+                        "endOffsets": "5786"
                     }
                 },
                 {

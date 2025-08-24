@@ -6,9 +6,9 @@
     maven="MyNewApp:app:unspecified"
     agpVersion="8.12.1"
     buildFolder="build"
-    bootClassPath="C:\Users\Azamat\AppData\Local\Android\Sdk\platforms\android-34\android.jar;C:\Users\Azamat\AppData\Local\Android\Sdk\build-tools\35.0.0\core-lambda-stubs.jar"
+    bootClassPath="C:\Users\Azamat\AppData\Local\Android\Sdk\platforms\android-36\android.jar;C:\Users\Azamat\AppData\Local\Android\Sdk\build-tools\35.0.0\core-lambda-stubs.jar"
     javaSourceLevel="1.8"
-    compileTarget="android-34"
+    compileTarget="android-36"
     neverShrinking="true">
   <lintOptions
       abortOnError="true"

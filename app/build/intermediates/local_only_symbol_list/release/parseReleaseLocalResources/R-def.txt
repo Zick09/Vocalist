@@ -5,11 +5,15 @@ color black
 color error
 color ic_launcher_background
 color inactive
+color inactive2
+color inactive3
 color on_background
 color on_error
 color on_primary
 color on_secondary
 color on_surface
+color orange
+color play_button_color
 color primary
 color primary_variant
 color secondary
@@ -48,6 +52,7 @@ id scrollViewWordPairs
 id spinnerDelay
 id spinnerFromLanguage
 id spinnerToLanguage
+id textViewRowCount
 id textViewTranslation
 layout activity_main
 layout word_pair_item
@@ -68,6 +73,10 @@ string translation_error
 string translation_failed
 string translation_placeholder
 string tts_init_failed
+style PlayButtonStyle
+style TextAppearance.MyNewApp.ActionBar.Title
 style Theme.MyNewApp
+style Theme.MyNewApp.Light
+style Widget.MyNewApp.ActionBar
 xml backup_rules
 xml data_extraction_rules
